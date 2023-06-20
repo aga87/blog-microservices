@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { randomBytes } from 'crypto';
+import axios from 'axios';
 
 dotenv.config();
 const app: Application = express();
@@ -36,7 +37,7 @@ app.get('/posts', (req, res) => {
   res.send(posts);
 });
 
-app.post('/posts', (req, res) => {
+app.post('/posts', async (req, res) => {
   const id = randomBytes(4).toString('hex');
   const { title } = req.body;
   if (!title || typeof title !== 'string')
@@ -45,7 +46,15 @@ app.post('/posts', (req, res) => {
   const post = { id, title };
   posts.push(post);
 
-  res.status(201).send(post);
+  const { EVENT_BUS_URL } = process.env;
+  await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
+    type: 'PostCreated',
+    data: {
+      post
+    }
+  });
+
+  return res.status(201).send(post);
 });
 
 // Listen for connections
