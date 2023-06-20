@@ -27,7 +27,7 @@ app.post('/events', (req, res) => {
     process.env;
 
   axios
-    .post(POSTS_SERVICE_URL || 'http://localhost:4000', event)
+    .post(POSTS_SERVICE_URL || 'http://localhost:4000/events', event)
     .catch((err) => {
       console.log(err.message);
     });
