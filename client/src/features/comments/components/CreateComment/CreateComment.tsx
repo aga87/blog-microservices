@@ -7,6 +7,7 @@ import {
   TextInput,
   SubmitButton
 } from '../../../../components';
+import { useDelayedLoader } from '../../../../hooks';
 import { useCreateComment } from './useCreateComment';
 import type { Comment } from '../../types/comment.types';
 
@@ -24,9 +25,11 @@ export const CreateComment = ({
   const { content, handleSubmit, formErrors, serverError, isLoading } =
     useCreateComment({ postId, handleCreateComment });
 
+  const { isLoaderVisible } = useDelayedLoader({ isLoading, delay: 1000 });
+
   return (
     <Form handleSubmit={handleSubmit} formLabel='Create new comment'>
-      {isLoading && <Loader />}
+      {isLoaderVisible && <Loader />}
       {serverError && <Error text={serverError} />}
       <Label inputId={inputId} text='New Comment' required />
       <div className='mb-2'>

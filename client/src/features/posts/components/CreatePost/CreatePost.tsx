@@ -7,6 +7,7 @@ import {
   SubmitButton,
   TextInput
 } from '../../../../components';
+import { useDelayedLoader } from '../../../../hooks';
 import { useCreatePost } from './useCreatePost';
 import type { Post } from '../../types/posts.types';
 
@@ -20,10 +21,12 @@ export const CreatePost = ({ handleCreatePost }: CreatePostProps) => {
   const { title, handleSubmit, formErrors, serverError, isLoading } =
     useCreatePost({ handleCreatePost });
 
+  const { isLoaderVisible } = useDelayedLoader({ isLoading, delay: 1000 });
+
   return (
     <div>
       <Form handleSubmit={handleSubmit} formLabel='Create new post'>
-        {isLoading && <Loader />}
+        {isLoaderVisible && <Loader />}
         {serverError && <Error text={serverError} />}
         <Label text='Title' inputId={inputId} required />
         <div className='mb-2'>
