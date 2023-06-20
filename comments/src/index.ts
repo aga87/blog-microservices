@@ -55,4 +55,4 @@ app.post('/posts/:id/comments', (req, res) => {
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4001;
-app.listen(PORT, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => console.log(`Listening on port ${port}...`));

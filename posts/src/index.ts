@@ -51,4 +51,4 @@ app.post('/posts', (req, res) => {
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4000;
-app.listen(PORT, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => console.log(`Listening on port ${port}...`));
