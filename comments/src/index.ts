@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { randomBytes } from 'crypto';
+import axios from 'axios';
 
 dotenv.config();
 const app: Application = express();
@@ -40,16 +41,29 @@ app.get('/posts/:id/comments', (req, res) => {
   res.send(commentsByPostId[req.params.id] || []);
 });
 
-app.post('/posts/:id/comments', (req, res) => {
+app.post('/posts/:id/comments', async (req, res) => {
   const commentId = randomBytes(4).toString('hex');
   const { content } = req.body;
+  const postId = req.params.id;
+
   if (!content || typeof content !== 'string')
     return res.status(400).send({ error: 'Content string is required' });
   const comment = { id: commentId, content };
   const comments = commentsByPostId[req.params.id] || [];
   comments.push(comment);
-  commentsByPostId[req.params.id] = comments;
-  res.status(201).send(comment);
+  commentsByPostId[postId] = comments;
+
+  const { EVENT_BUS_URL } = process.env;
+  await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
+    type: 'CommentCreated',
+    data: {
+      id: commentId,
+      content,
+      postId
+    }
+  });
+
+  return res.status(201).send(comment);
 });
 
 // Listen for connections
