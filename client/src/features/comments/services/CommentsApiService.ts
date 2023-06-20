@@ -19,3 +19,22 @@ export const fetchComments = async (postId: string) => {
     return { comments: [], error: getError(err) };
   }
 };
+
+export const createComment = async ({
+  postId,
+  newComment
+}: {
+  postId: string;
+  newComment: NewComment;
+}) => {
+  try {
+    const res = await getApiInstance().post(
+      `/posts/${postId}/comments`,
+      newComment
+    );
+    const comment: Comment = res.data;
+    return { comment, error: null };
+  } catch (err: unknown) {
+    return { comment: null, error: getError(err) };
+  }
+};
