@@ -66,6 +66,11 @@ app.post('/posts/:id/comments', async (req, res) => {
   return res.status(201).send(comment);
 });
 
+app.post('/events', (req, res) => {
+  console.log('Event Received', req.body.type);
+  return res.send({});
+});
+
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4001;

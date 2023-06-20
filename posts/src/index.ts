@@ -57,6 +57,11 @@ app.post('/posts', async (req, res) => {
   return res.status(201).send(post);
 });
 
+app.post('/events', (req, res) => {
+  console.log('Received Event', req.body.type);
+  return res.send({});
+});
+
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4000;
