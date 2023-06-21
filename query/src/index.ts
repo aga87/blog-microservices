@@ -22,6 +22,41 @@ app.get('/ping', (req: Request, res: Response) => {
   res.send('Hello World');
 });
 
+type Comment = {
+  id: string;
+  content: string;
+};
+
+type Post = {
+  id: string;
+  title: string;
+  comments: Comment[];
+};
+
+const posts: Post[] = [];
+
+app.get('/posts', (req, res) => {
+  res.send(posts);
+});
+
+app.post('/events', (req, res) => {
+  const { type, data } = req.body;
+
+  if (type === 'PostCreated') {
+    const { id, title } = data;
+    const post = { id, title, comments: [] };
+    posts.unshift(post); // newest on top
+  }
+
+  if (type === 'CommentCreated') {
+    const { id, content, postId } = data;
+    const post = posts.filter((post) => post.id === postId);
+    post[0].comments.push({ id, content });
+  }
+
+  return res.send({});
+});
+
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4002;

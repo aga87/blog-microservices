@@ -44,13 +44,13 @@ app.post('/posts', async (req, res) => {
     return res.status(400).send({ error: 'Title string is required.' });
 
   const post = { id, title };
-  posts.push(post);
+  posts.unshift(post); // newest on top
 
   const { EVENT_BUS_URL } = process.env;
   await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
     type: 'PostCreated',
     data: {
-      post
+      ...post
     }
   });
 
