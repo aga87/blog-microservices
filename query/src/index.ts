@@ -25,6 +25,7 @@ app.get('/ping', (req: Request, res: Response) => {
 type Comment = {
   id: string;
   content: string;
+  status: 'pending' | 'approved' | 'rejected';
 };
 
 type Post = {
@@ -49,9 +50,9 @@ app.post('/events', (req, res) => {
   }
 
   if (type === 'CommentCreated') {
-    const { id, content, postId } = data;
+    const { postId, ...comment } = data;
     const post = posts.filter((post) => post.id === postId);
-    post[0].comments.push({ id, content });
+    post[0].comments.push(comment);
   }
 
   return res.send({});

@@ -29,6 +29,7 @@ app.get('/ping', (req: Request, res: Response) => {
 type Comment = {
   id: string;
   content: string;
+  status: 'pending' | 'approved' | 'rejected';
 };
 
 type CommentsByPostId = {
@@ -48,7 +49,7 @@ app.post('/posts/:id/comments', async (req, res) => {
 
   if (!content || typeof content !== 'string')
     return res.status(400).send({ error: 'Content string is required' });
-  const comment = { id: commentId, content };
+  const comment: Comment = { id: commentId, content, status: 'pending' };
   const comments = commentsByPostId[req.params.id] || [];
   comments.push(comment);
   commentsByPostId[postId] = comments;
@@ -57,8 +58,7 @@ app.post('/posts/:id/comments', async (req, res) => {
   await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
     type: 'CommentCreated',
     data: {
-      id: commentId,
-      content,
+      ...comment,
       postId
     }
   });
