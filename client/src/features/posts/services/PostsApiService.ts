@@ -4,9 +4,9 @@ import type { NewPost, Post } from '../types/posts.types';
 const getApiInstance = (service: 'posts' | 'query') => {
   let baseURL;
   if (service === 'posts') {
-    baseURL = process.env.POSTS_API_BASE_URL || 'http://localhost:4000';
+    baseURL = process.env.POSTS_SERVICE_BASE_URL || 'http://localhost:4000';
   } else {
-    baseURL = process.env.QUERY_API_BASE_URL || 'http://localhost:4002';
+    baseURL = process.env.QUERY_SERVICE_BASE_URL || 'http://localhost:4002';
   }
   const headers = {
     Accept: 'application/json',

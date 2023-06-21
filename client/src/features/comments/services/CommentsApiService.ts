@@ -2,7 +2,8 @@ import { createApiInstance, getError } from '../../../libs/axios';
 import type { NewComment, Comment } from '../types/comment.types';
 
 const getApiInstance = () => {
-  const baseURL = process.env.COMMENTS_API_BASE_URL || 'http://localhost:4001';
+  const baseURL =
+    process.env.COMMENTS_SERVICE_BASE_URL || 'http://localhost:4001';
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json'
