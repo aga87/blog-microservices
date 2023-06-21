@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import axios from 'axios';
 
 dotenv.config();
 const app: Application = express();
@@ -23,6 +24,29 @@ app.get('/ping', (req: Request, res: Response) => {
 });
 
 // COMMENT MODERATION Microservice
+app.post('/events', async (req, res) => {
+  const { type, data } = req.body;
+
+  if (type === 'CommentCreated') {
+    const { id, content, postId } = data;
+
+    // (Assume comment moderation is more complex / not instantaneous)
+    const status = content.includes('orange') ? 'rejected' : 'approved';
+
+    const { EVENT_BUS_URL } = process.env;
+    await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
+      type: 'CommentModerated',
+      data: {
+        id,
+        postId,
+        status,
+        content
+      }
+    });
+  }
+
+  res.send({});
+});
 
 // Listen for connections
 const { PORT } = process.env;
