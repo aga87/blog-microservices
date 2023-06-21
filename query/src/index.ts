@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import { randomBytes } from 'crypto';
-import axios from 'axios';
 
 dotenv.config();
 const app: Application = express();
@@ -24,45 +22,42 @@ app.get('/ping', (req: Request, res: Response) => {
   res.send('Hello World');
 });
 
-// POSTS Microservice
+type Comment = {
+  id: string;
+  content: string;
+};
 
 type Post = {
   id: string;
   title: string;
+  comments: Comment[];
 };
 
-const posts: Post[] = []; // Store posts in memory for demo purposes
+const posts: Post[] = [];
 
 app.get('/posts', (req, res) => {
   res.send(posts);
 });
 
-app.post('/posts', async (req, res) => {
-  const id = randomBytes(4).toString('hex');
-  const { title } = req.body;
-  if (!title || typeof title !== 'string')
-    return res.status(400).send({ error: 'Title string is required.' });
-
-  const post = { id, title };
-  posts.unshift(post); // newest on top
-
-  const { EVENT_BUS_URL } = process.env;
-  await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
-    type: 'PostCreated',
-    data: {
-      ...post
-    }
-  });
-
-  return res.status(201).send(post);
-});
-
 app.post('/events', (req, res) => {
-  console.log('Received Event', req.body.type);
+  const { type, data } = req.body;
+
+  if (type === 'PostCreated') {
+    const { id, title } = data;
+    const post = { id, title, comments: [] };
+    posts.unshift(post); // newest on top
+  }
+
+  if (type === 'CommentCreated') {
+    const { id, content, postId } = data;
+    const post = posts.filter((post) => post.id === postId);
+    post[0].comments.push({ id, content });
+  }
+
   return res.send({});
 });
 
 // Listen for connections
 const { PORT } = process.env;
-const port = PORT || 4000;
+const port = PORT || 4002;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
