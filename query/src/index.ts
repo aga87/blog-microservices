@@ -25,6 +25,7 @@ app.get('/ping', (req: Request, res: Response) => {
 type Comment = {
   id: string;
   content: string;
+  status: 'pending' | 'approved' | 'rejected';
 };
 
 type Post = {
@@ -49,9 +50,23 @@ app.post('/events', (req, res) => {
   }
 
   if (type === 'CommentCreated') {
-    const { id, content, postId } = data;
-    const post = posts.filter((post) => post.id === postId);
-    post[0].comments.push({ id, content });
+    const { postId, ...comment } = data;
+    const post = posts.find((post) => post.id === postId);
+    if (post) {
+      post.comments.push(comment);
+    }
+  }
+
+  if (type === 'CommentUpdated') {
+    const { id, postId, status } = data;
+
+    const post = posts.find((post) => post.id === postId);
+
+    const comment = post?.comments.find((comment) => comment.id === id);
+
+    if (comment) {
+      comment.status = status;
+    }
   }
 
   return res.send({});

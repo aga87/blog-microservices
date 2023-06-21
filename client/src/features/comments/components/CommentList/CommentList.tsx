@@ -7,9 +7,22 @@ type CommentListProps = {
 
 export const CommentList = ({ postComments }: CommentListProps) => {
   const commentListItems = postComments.map(comment => {
+    const { id, content, status } = comment;
+
+    let commentContent = content;
+    if (status === 'pending') {
+      commentContent = 'This comment is awaiting moderation.';
+    }
+
+    if (status === 'rejected') return null;
     return (
-      <li key={comment.id} className='py-2 border-b border-slate-200'>
-        {comment.content}
+      <li
+        key={id}
+        className={`py-2 border-b border-slate-200 ${
+          status === 'pending' ? 'italic text-slate-500 font-light' : ''
+        }`}
+      >
+        {commentContent}
       </li>
     );
   });

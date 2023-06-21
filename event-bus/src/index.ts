@@ -23,8 +23,12 @@ app.get('/ping', (req: Request, res: Response) => {
 app.post('/events', (req, res) => {
   const event = req.body;
 
-  const { POSTS_SERVICE_URL, COMMENTS_SERVICE_URL, QUERY_SERVICE_URL } =
-    process.env;
+  const {
+    POSTS_SERVICE_URL,
+    COMMENTS_SERVICE_URL,
+    QUERY_SERVICE_URL,
+    MODERATION_SERVICE_URL
+  } = process.env;
 
   axios
     .post(POSTS_SERVICE_URL || 'http://localhost:4000/events', event)
@@ -40,6 +44,12 @@ app.post('/events', (req, res) => {
 
   axios
     .post(QUERY_SERVICE_URL || 'http://localhost:4002/events', event)
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+  axios
+    .post(MODERATION_SERVICE_URL || 'http://localhost:4003/events', event)
     .catch((err) => {
       console.log(err.message);
     });
