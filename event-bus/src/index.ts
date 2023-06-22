@@ -20,8 +20,20 @@ app.get('/ping', (req: Request, res: Response) => {
   res.send('Hello World');
 });
 
-app.post('/events', (req, res) => {
+type Event = {
+  type: string;
+  data: {
+    [key: string]: unknown;
+  };
+};
+
+// Storing events in memory for demo purposes
+const events: Event[] = [];
+
+app.post('/events', (req: Request, res: Response) => {
   const event = req.body;
+
+  events.push(event);
 
   const {
     POSTS_SERVICE_URL,
@@ -55,6 +67,10 @@ app.post('/events', (req, res) => {
     });
 
   return res.send({ status: 'OK' });
+});
+
+app.get('/events', (req: Request, res: Response) => {
+  return res.send(events);
 });
 
 const { PORT } = process.env;
