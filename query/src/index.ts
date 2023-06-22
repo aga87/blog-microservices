@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import axios from 'axios';
+import type { Post, Event } from './types';
 
 dotenv.config();
 const app: Application = express();
@@ -22,26 +24,14 @@ app.get('/ping', (req: Request, res: Response) => {
   res.send('Hello World');
 });
 
-type Comment = {
-  id: string;
-  content: string;
-  status: 'pending' | 'approved' | 'rejected';
-};
-
-type Post = {
-  id: string;
-  title: string;
-  comments: Comment[];
-};
-
 const posts: Post[] = [];
 
 app.get('/posts', (req, res) => {
   res.send(posts);
 });
 
-app.post('/events', (req, res) => {
-  const { type, data } = req.body;
+const handleEvent = (event: Event) => {
+  const { type, data } = event;
 
   if (type === 'PostCreated') {
     const { id, title } = data;
@@ -68,11 +58,33 @@ app.post('/events', (req, res) => {
       comment.status = status;
     }
   }
+};
 
+app.post('/events', (req, res) => {
+  const event = req.body;
+  handleEvent(event);
   return res.send({});
 });
 
 // Listen for connections
 const { PORT } = process.env;
 const port = PORT || 4002;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+app.listen(port, async () => {
+  console.log(`Listening on port ${port}...`);
+  // Request all events when the query service comes online
+  try {
+    const { EVENT_BUS_URL } = process.env;
+    const res = await axios.get(
+      EVENT_BUS_URL || 'http://localhost:4005/events'
+    );
+
+    for (let event of res.data) {
+      console.log('Processing event:', event.type);
+
+      handleEvent(event);
+    }
+  } catch (err: any) {
+    console.log(err.message);
+  }
+});
