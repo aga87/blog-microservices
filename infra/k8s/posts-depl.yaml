@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: posts-depl
+spec:
+  replicas: 1 # no of pods
+  selector: # find all pods with a label "app: posts"
+    matchLabels: 
+      app: posts
+  template: # pod configuration
+    metadata: # give the pod label "app: posts"
+      labels:
+        app: posts
+    spec: 
+      containers: 
+        - name: posts
+          image: agz87/posts
