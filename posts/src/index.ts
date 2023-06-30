@@ -47,7 +47,7 @@ app.post('/posts', async (req, res) => {
   posts.unshift(post); // newest on top
 
   const { EVENT_BUS_URL } = process.env;
-  await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
+  await axios.post(EVENT_BUS_URL || 'http://event-bus-srv:4005/events', {
     type: 'PostCreated',
     data: {
       ...post

@@ -15,3 +15,17 @@ spec:
       containers: 
         - name: posts
           image: agz87/posts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-clusterip-srv
+spec:
+  selector: 
+    app: posts
+  type: ClusterIP # (default, can be omitted)
+  ports: 
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000 # because our app is listening on port 4000

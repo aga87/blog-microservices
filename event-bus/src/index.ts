@@ -43,7 +43,7 @@ app.post('/events', (req: Request, res: Response) => {
   } = process.env;
 
   axios
-    .post(POSTS_SERVICE_URL || 'http://localhost:4000/events', event)
+    .post(POSTS_SERVICE_URL || 'http://posts-clusterip-srv:4000/events', event)
     .catch((err) => {
       console.log(err.message);
     });
