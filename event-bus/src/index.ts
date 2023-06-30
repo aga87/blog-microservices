@@ -49,19 +49,19 @@ app.post('/events', (req: Request, res: Response) => {
     });
 
   axios
-    .post(COMMENTS_SERVICE_URL || 'http://localhost:4001/events', event)
+    .post(COMMENTS_SERVICE_URL || 'http://comments-srv:4001/events', event)
     .catch((err) => {
       console.log(err.message);
     });
 
   axios
-    .post(QUERY_SERVICE_URL || 'http://localhost:4002/events', event)
+    .post(QUERY_SERVICE_URL || 'http://query-srv:4002/events', event)
     .catch((err) => {
       console.log(err.message);
     });
 
   axios
-    .post(MODERATION_SERVICE_URL || 'http://localhost:4003/events', event)
+    .post(MODERATION_SERVICE_URL || 'http://moderation-srv:4003/events', event)
     .catch((err) => {
       console.log(err.message);
     });
