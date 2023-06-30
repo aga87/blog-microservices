@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: comments-depl
+spec:
+  replicas: 1 # no of pods
+  selector: # find all pods with a label "app:posts" ("app" does not have any special meaning: can use other word instead)
+    matchLabels: 
+      app: comments
+  template: # pod configuration
+    metadata: # give the pod label "app: posts"
+      labels:
+        app: comments
+    spec: 
+      containers: 
+        - name: comments
+          image: agz87/comments
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-srv
+spec:
+  selector: 
+    app: comments
+  type: ClusterIP # (default, can be omitted)
+  ports: 
+    - name: comments
+      protocol: TCP
+      port: 4001
+      targetPort: 4001 # because our app is listening on port 4005
