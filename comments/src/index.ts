@@ -55,7 +55,7 @@ app.post('/posts/:id/comments', async (req, res) => {
   commentsByPostId[postId] = comments;
 
   const { EVENT_BUS_URL } = process.env;
-  await axios.post(EVENT_BUS_URL || 'http://localhost:4005/events', {
+  await axios.post(EVENT_BUS_URL || 'http://event-bus-srv:4005/events', {
     type: 'CommentCreated',
     data: {
       ...comment,
@@ -81,7 +81,7 @@ app.post('/events', async (req, res) => {
       comment.status = status;
     }
 
-    await axios.post('http://localhost:4005/events', {
+    await axios.post('http://event-bus-srv:4005/events', {
       type: 'CommentUpdated',
       data: {
         postId,
