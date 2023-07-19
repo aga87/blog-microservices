@@ -4,15 +4,37 @@ metadata:
   name: ingress-srv
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true" # this will allow us to use regex (to mark route params, see below)
 spec:
   rules:
     - host: posts.com
       http:
         paths:
-          - path: /posts # because we expect to get traffic on the incoming route of posts
+          - path: /posts/create # because we expect to get traffic on the incoming route of posts
             pathType: Prefix
             backend:
               service:
                 name: posts-clusterip-srv
                 port:
                   number: 4000 # because we set 4000 in posts-depl - posts-clusterip-srv
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+          - path: /posts/?(.*)/comments # nginx does not allow wildcards - we need to use regex to mark the id param
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+          - path: /?(.*) # for single-page React app "/" would be enough, but for multi-page apps we need this expr, needs to be in the end
+            pathType: Prefix
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
