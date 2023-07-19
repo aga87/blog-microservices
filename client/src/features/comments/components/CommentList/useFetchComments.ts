@@ -1,10 +1,9 @@
+/* We used this hook to fetch comments separately before the query service was implemented
+
 import { useEffect, useState } from 'react';
 import { fetchComments } from '../../services/CommentsApiService';
 import type { Comment } from '../../types/comment.types';
 
-/*
-  We used this hook to fetch comments separately before the query service was implemented
-*/
 export const useFetchComments = (postId: string) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,3 +33,7 @@ export const useFetchComments = (postId: string) => {
     serverError
   };
 };
+
+*/
+
+export {};

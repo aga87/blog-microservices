@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: query-depl
+spec:
+  replicas: 1 # no of pods
+  selector: # find all pods with a label "app:posts" ("app" does not have any special meaning: can use other word instead)
+    matchLabels: 
+      app: query
+  template: # pod configuration
+    metadata: # give the pod label "app: posts"
+      labels:
+        app: query
+    spec: 
+      containers: 
+        - name: query
+          image: agz87/query
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  selector: 
+    app: query
+  type: ClusterIP # (default, can be omitted)
+  ports: 
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002 # because our app is listening on port 4005

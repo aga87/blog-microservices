@@ -76,7 +76,7 @@ app.listen(port, async () => {
   try {
     const { EVENT_BUS_URL } = process.env;
     const res = await axios.get(
-      EVENT_BUS_URL || 'http://localhost:4005/events'
+      EVENT_BUS_URL || 'http://event-bus-srv:4005/events'
     );
 
     for (let event of res.data) {
