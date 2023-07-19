@@ -1,23 +1,18 @@
-import { createApiInstance, getError } from '../../../libs/axios';
+import { getApiInstance, getError } from '../../../libs/axios';
 import type { NewPost, Post } from '../types/posts.types';
 
-const getApiInstance = (service: 'posts' | 'query') => {
-  let baseURL;
-  if (service === 'posts') {
-    baseURL = process.env.POSTS_SERVICE_BASE_URL || 'http://localhost:4000';
-  } else {
-    baseURL = process.env.QUERY_SERVICE_BASE_URL || 'http://localhost:4002';
-  }
-  const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  };
-  return createApiInstance(baseURL, headers);
-};
+// export const getApiInstance = () => {
+//   const baseURL = process.env.POSTS_SERVICE_BASE_URL || 'http://posts.com';
+//   const headers = {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json'
+//   };
+//   return createApiInstance(baseURL, headers);
+// };
 
 export const fetchPosts = async () => {
   try {
-    const res = await getApiInstance('query').get('/posts');
+    const res = await getApiInstance().get('/posts');
     const posts: Post[] = res.data;
     return { posts, error: null };
   } catch (err: unknown) {
@@ -27,7 +22,7 @@ export const fetchPosts = async () => {
 
 export const createPost = async (newPost: NewPost) => {
   try {
-    const res = await getApiInstance('posts').post('/posts', newPost);
+    const res = await getApiInstance().post('/posts/create', newPost);
     const post: Post = res.data;
     return { post, error: null };
   } catch (err: unknown) {

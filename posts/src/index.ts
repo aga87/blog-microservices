@@ -33,11 +33,12 @@ type Post = {
 
 const posts: Post[] = []; // Store posts in memory for demo purposes
 
-app.get('/posts', (req, res) => {
-  res.send(posts);
-});
+// Note: not needed since we implemented query service
+// app.get('/posts', (req, res) => {
+//   res.send(posts);
+// });
 
-app.post('/posts', async (req, res) => {
+app.post('/posts/create', async (req, res) => {
   const id = randomBytes(4).toString('hex');
   const { title } = req.body;
   if (!title || typeof title !== 'string')

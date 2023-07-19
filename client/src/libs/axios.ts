@@ -4,7 +4,7 @@ type Headers = {
   [key: string]: string;
 };
 
-export const createApiInstance = (
+const createApiInstance = (
   baseURL: string,
   headers: Headers
 ): AxiosInstance => {
@@ -12,6 +12,15 @@ export const createApiInstance = (
     baseURL,
     headers
   });
+};
+
+export const getApiInstance = () => {
+  const baseURL = process.env.POSTS_SERVICE_BASE_URL || 'http://posts.com';
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  };
+  return createApiInstance(baseURL, headers);
 };
 
 export const getError = (err: unknown): string => {
